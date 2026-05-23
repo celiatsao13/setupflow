@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1366">
+<title>SAM Art Trail — Entry Setup</title>
+<style>
+/* ============================================================
+   FONTS — Self Modern, Cosmica, Cosmica Mono
+   ============================================================ */
+@font-face { font-family:"Self Modern"; src:url("./SAM Game Design System/fonts/SelfModern-Regular.ttf") format("truetype"); font-weight:400; font-display:swap; }
+@font-face { font-family:"Self Modern"; src:url("./SAM Game Design System/fonts/SelfModern-Text.ttf") format("truetype"); font-weight:600; font-display:swap; }
+@font-face { font-family:"Cosmica"; src:url("./SAM Game Design System/fonts/Cosmica-Book.otf") format("opentype"); font-weight:400; font-display:swap; }
+@font-face { font-family:"Cosmica"; src:url("./SAM Game Design System/fonts/Cosmica-Medium.otf") format("opentype"); font-weight:500; font-display:swap; }
+@font-face { font-family:"Cosmica"; src:url("./SAM Game Design System/fonts/Cosmica-Semibold.otf") format("opentype"); font-weight:600; font-display:swap; }
+@font-face { font-family:"Cosmica"; src:url("./SAM Game Design System/fonts/Cosmica-Bold.otf") format("opentype"); font-weight:700; font-display:swap; }
+@font-face { font-family:"Cosmica"; src:url("./SAM Game Design System/fonts/Cosmica-Light.otf") format("opentype"); font-weight:300; font-display:swap; }
+@font-face { font-family:"Cosmica Mono"; src:url("./SAM Game Design System/fonts/CosmicaMono-Light.ttf") format("truetype"); font-weight:300; font-display:swap; }
+@font-face { font-family:"Cosmica Mono"; src:url("./SAM Game Design System/fonts/CosmicaMono-Regular.ttf") format("truetype"); font-weight:450; font-display:swap; }
+@font-face { font-family:"Cosmica Mono"; src:url("./SAM Game Design System/fonts/CosmicaMono-Medium.ttf") format("truetype"); font-weight:500; font-display:swap; }
+
+/* ============================================================
+   DESIGN TOKENS — Dark mode
+   ============================================================ */
+:root {
+  --bg:       #323131;
+  --surface:  #3D3C3C;
+  --surface2: #484747;
+  --surface3: #535252;
+  --ink:      #F4EFE2;
+  --ink2:     #C9C3B3;
+  --ink3:     #8C887D;
+  --ink4:     #5A5756;
+  --accent:   #C8351B;
+  --accent-d: #9E2410;
+  --accent-l: rgba(200,53,27,.18);
+  --cobalt-l: rgba(26,46,140,.25);
+  --cobalt-b: rgba(200,212,232,.2);
+
+  --fd: "Self Modern", "Cormorant Garamond", Georgia, serif;
+  --fb: "Cosmica", "Inter", system-ui, sans-serif;
+  --fm: "Cosmica Mono", "JetBrains Mono", ui-monospace, monospace;
+
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:    cubic-bezier(0.2,  0.7,  0.2,  1);
+  --ease-io:     cubic-bezier(0.4,  0,    0.2,  1);
+  --tf: 140ms; --tb: 260ms; --ts: 380ms;
+
+  --r-pill: 999px; --r-lg: 24px; --r-md: 16px; --r-sm: 10px;
+  --margin: 40px;
+  --nav-h:  64px;
+
+  --sh-card: 0 1px 3px rgba(0,0,0,.25), 0 4px 14px rgba(0,0,0,.2);
+  --sh-up:   0 6px 24px rgba(0,0,0,.35), 0 1px 4px rgba(0,0,0,.25);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#2A2929;-webkit-font-smoothing:antialiased}
+button{border:none;background:none;cursor:pointer;font:inherit;color:inherit;padding:0}
+input,select{font:inherit;color:inherit;outline:none;border:none;background:none}
+h1,h2,h3,p{margin:0}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+.app{
+  width:1366px; height:1024px;
+  background:var(--bg);
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+  transform-origin:top left;
+}
+
+/* ============================================================
+   TOP NAV
+   ============================================================ */
+.nav{
+  height:var(--nav-h); flex-shrink:0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 var(--margin);
+  border-bottom:1px solid var(--surface2);
+  position:relative; z-index:20;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-img{height:20px;width:auto;display:block;flex-shrink:0}
+.logo-dot{width:1px;height:16px;background:var(--ink2);flex-shrink:0}
+.logo-name{font:600 16px/1 var(--fb);color:var(--ink2);text-transform:uppercase;letter-spacing:.08em}
+
+.prog-wrap{display:flex;align-items:center;gap:8px}
+.prog-dot{
+  height:10px; border-radius:var(--r-pill);
+  transition:background var(--tb) var(--ease-out), width var(--tb) var(--ease-spring);
+}
+.prog-dot.incomplete{width:10px;background:var(--surface3)}
+.prog-dot.active{width:24px;background:var(--accent)}
+.prog-dot.complete{width:10px;background:var(--ink)}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+.screens{flex:1;position:relative;overflow:hidden;z-index:2}
+.screen{
+  position:absolute;inset:0;
+  padding:56px 96px 36px;
+  display:flex;flex-direction:column;
+  opacity:0;transform:translateX(28px);pointer-events:none;
+  transition:opacity var(--tb) var(--ease-out), transform var(--tb) var(--ease-out);
+  will-change:opacity,transform;
+}
+.screen.active{opacity:1;transform:translateX(0);pointer-events:all}
+/* Welcome screen keeps original tighter padding */
+#s0{padding:28px 40px 36px}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 26px; border-radius:var(--r-pill);
+  font:500 16px/1 var(--fb);
+  transition:transform var(--tf) var(--ease-spring),background var(--tf),border-color var(--tf),opacity var(--tf);
+  cursor:pointer; white-space:nowrap;
+}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:var(--ink);color:var(--bg);border:2px solid var(--ink)}
+.btn-primary:hover{background:var(--ink2);border-color:var(--ink2)}
+.btn-primary:disabled{background:var(--ink4);border-color:var(--ink4);cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--ink2);border:2px solid transparent;padding:14px 10px}
+.btn-ghost:hover{color:var(--ink)}
+.btn-outline{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.btn-outline:hover{background:var(--surface)}
+.btn-accent{background:var(--accent);color:#fff;border:2px solid var(--accent)}
+.btn-accent:hover{background:var(--accent-d);border-color:var(--accent-d)}
+.btn.lg{padding:18px 34px;font-size:18px}
+.btn.sm{padding:9px 18px;font-size:14px}
+
+.actions{
+  margin-top:auto;padding-top:16px;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+
+/* ============================================================
+   SECTION LABEL
+   ============================================================ */
+.s-label{
+  font:500 11px/1 var(--fm);letter-spacing:.14em;
+  text-transform:uppercase;color:#8D887D;
+  margin-bottom:12px;
+}
+
+/* ============================================================
+   SCREEN 0 — WELCOME
+   ============================================================ */
+
+/* Welcome background slideshow — lives in .app, covers full 1366×1024 */
+.welcome-bg{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  display:none;
+}
+.app:has(#s0.active) .welcome-bg{display:block}
+.welcome-bg-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:top center;
+  opacity:0;transition:opacity 2s ease-in-out;
+}
+.welcome-bg-img.active{opacity:1}
+/* dark overlay so text stays legible */
+.welcome-bg::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(0,0,0,.65);pointer-events:none;
+}
+
+/* Nav transparent on welcome so bg bleeds through */
+.app:has(#s0.active) .nav{background:transparent;border-bottom-color:rgba(255,255,255,.12)}
+
+.welcome-grid{
+  display:flex;flex:1;align-items:center;
+  position:relative;z-index:2;
+}
+.welcome-left{display:flex;flex-direction:column;gap:0;flex:1;max-width:1100px;margin:0 auto;align-items:flex-start}
+.welcome-tag{display:none}
+.welcome-hello{
+  font:400 80px/1.0 var(--fd);color:var(--accent);
+  letter-spacing:-.03em;margin-bottom:4px;
+}
+.welcome-h1{
+  font:600 80px/1.0 var(--fd);color:var(--ink);
+  letter-spacing:-.03em;margin-bottom:16px;width:100%;white-space:nowrap;
+}
+.welcome-h1 em{color:var(--ink);font-style:normal}
+.welcome-sub{
+  font:400 54px/1.05 var(--fd);color:var(--ink2);
+  letter-spacing:-.02em;margin-bottom:20px;width:100%;
+}
+.welcome-lede{
+  font:500 24.6px/1.4 var(--fb);color:var(--ink2);
+  margin-bottom:64px;width:100%;white-space:nowrap;
+}
+.welcome-rule{
+  width:100%;border:none;border-top:1px solid rgba(244,239,226,0.6);
+  margin:0 0 64px;
+}
+.welcome-btns{display:flex;flex-direction:row;gap:16px;width:100%}
+.entry-btn{
+  flex:1;display:flex;align-items:center;gap:14px;
+  padding:18px 20px;background:rgba(50,49,49,0.45);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,255,255,0.18);border-radius:var(--r-md);
+  cursor:pointer;text-align:left;color:var(--ink);font-family:var(--fb);
+  transition:border-color var(--tf),transform var(--tf) var(--ease-spring);
+}
+.entry-btn:hover{border-color:var(--ink3);transform:translateY(-2px)}
+.entry-btn:active{transform:scale(.98)}
+.e-icon{
+  width:40px;height:40px;border-radius:10px;
+  border:1.5px solid var(--surface3);background:var(--surface2);
+  display:grid;place-items:center;flex-shrink:0;color:var(--ink2);
+}
+.e-title{font:500 19px/1.2 var(--fb);color:var(--ink)}
+.e-sub{font:400 14px/1.3 var(--fb);color:var(--ink2);margin-top:3px}
+
+/* Welcome right — poster illustration */
+.welcome-right{height:100%;display:flex;align-items:center}
+.welcome-poster{
+  width:100%;height:calc(100% - 16px);
+  background:var(--surface);border-radius:var(--r-lg);
+  overflow:hidden;position:relative;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:36px;
+}
+.poster-bg-circle{
+  position:absolute;width:380px;height:380px;border-radius:50%;
+  background:var(--accent);opacity:.08;
+  top:-60px;right:-80px;pointer-events:none;
+}
+.poster-bg-rect{
+  position:absolute;width:260px;height:360px;
+  border-radius:20px;background:var(--surface2);opacity:.9;
+  bottom:-40px;left:-40px;transform:rotate(-8deg);pointer-events:none;
+}
+.poster-bg-sm{
+  position:absolute;width:100px;height:100px;border-radius:50%;
+  background:var(--accent);opacity:.12;
+  bottom:80px;right:60px;pointer-events:none;
+}
+.poster-top{position:relative;z-index:2}
+.poster-wm{
+  font:700 18px/1 var(--fm);letter-spacing:.28em;
+  color:var(--ink);text-transform:uppercase;margin-bottom:6px;
+}
+.poster-rule{width:40px;height:1.5px;background:var(--accent);margin-bottom:6px}
+.poster-sub-title{font:400 22px/1 var(--fd);color:var(--ink2)}
+.poster-art{
+  position:relative;z-index:2;flex:1;
+  display:flex;align-items:center;justify-content:center;
+}
+.poster-art-frame{
+  width:280px;height:220px;background:var(--bg);
+  border-radius:12px;border:1.5px solid var(--surface3);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:10px;
+}
+.poster-art-stripe{
+  width:100%;height:90px;
+  background:linear-gradient(135deg,var(--surface2) 0%,var(--surface3) 100%);
+  position:absolute;top:0;
+}
+.poster-art-stripe2{
+  width:100%;height:60px;
+  background:var(--surface);
+  position:absolute;bottom:0;
+}
+.poster-art-label{
+  font:500 11px/1 var(--fm);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink3);position:relative;z-index:2;
+}
+.poster-art-dot{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--accent);opacity:.18;
+  position:absolute;top:24px;right:28px;
+}
+.poster-bottom{
+  position:relative;z-index:2;
+  display:flex;justify-content:space-between;align-items:flex-end;
+}
+.poster-museum{
+  font:500 11px/1 var(--fm);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink3);
+}
+.poster-year{
+  font:400 48px/.9 var(--fd);color:var(--ink);
+  opacity:.14;letter-spacing:-.02em;
+}
+
+/* ============================================================
+   SCREEN 1 — GROUP SIZE
+   ============================================================ */
+.size-grid{
+  display:flex;gap:12px;margin-top:16px;
+}
+.size-card{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding:24px 14px 20px;
+  background:var(--surface);border:2px solid transparent;border-radius:var(--r-lg);
+  cursor:pointer;font-family:var(--fb);color:var(--ink);
+  transition:border-color var(--tb) var(--ease-out),background var(--tf),transform var(--tf) var(--ease-spring);
+}
+.size-card:hover{border-color:var(--ink3);transform:translateY(-3px)}
+.size-card.selected{background:var(--accent-l);border-color:var(--accent)}
+.size-card:active{transform:scale(.97)}
+.size-icon-row{display:flex;align-items:flex-end;justify-content:center;height:26px;gap:4px;color:var(--ink3)}
+.size-card.selected .size-icon-row{color:var(--accent)}
+.size-num{font:600 52px/1 var(--fb);color:var(--ink);letter-spacing:-.02em}
+.size-lbl{
+  font:500 12px/1 var(--fm);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink3);
+}
+.size-card.selected .size-lbl{color:var(--accent)}
+
+.size-extras{
+  display:flex;gap:12px;margin-top:40px;
+  opacity:0;transform:translateY(8px);pointer-events:none;
+  transition:opacity var(--tb) var(--ease-out),transform var(--tb) var(--ease-out);
+}
+.size-extras.show{opacity:1;transform:translateY(0);pointer-events:all}
+.field-group{display:flex;flex-direction:column;gap:7px}
+/* How Many — same width as one size card */
+#sizeNumWrap{flex:0 0 221px;width:221px}
+/* Group name — spans from card 02 to 05+ */
+#groupNameWrap{flex:1}
+.field-label{
+  font:500 11px/1 var(--fm);letter-spacing:.1em;
+  text-transform:uppercase;color:#8D887D;
+  white-space:nowrap;
+}
+.field-label .req{color:var(--accent)}
+.field-input{
+  padding:12px 16px;background:var(--surface);
+  border:1.5px solid var(--surface2);border-radius:var(--r-sm);
+  font:400 16px/1 var(--fb);color:var(--ink);
+  transition:border-color var(--tf);
+}
+.field-input:focus{border-color:var(--ink)}
+.field-input::placeholder{color:#98948A}
+.field-input.num{width:100%;text-align:center;color-scheme:dark}
+.field-input.num::-webkit-inner-spin-button,
+.field-input.num::-webkit-outer-spin-button{opacity:1;cursor:pointer}
+.field-input.name{width:100%}
+.char-hint{font:400 11px/1 var(--fm);color:var(--ink4);text-align:right;margin-top:3px}
+
+/* ============================================================
+   SCREEN 2 — QUICK INTROS
+   ============================================================ */
+.intros-grid{
+  display:flex;flex-direction:column;
+  gap:24px;flex:1;overflow:hidden;
+}
+.intros-left{display:flex;flex-direction:column;gap:10px;padding-top:2px}
+.intros-left h1{font:400 42px/1.05 var(--fd);color:var(--ink);letter-spacing:-.015em}
+.intros-lede{font:400 16px/1.65 var(--fb);color:var(--ink2);margin-top:6px}
+.req-note{
+  display:flex;align-items:center;gap:7px;margin-top:12px;
+  font:400 12px/1 var(--fm);color:var(--ink3);
+}
+.req-note .dot{color:var(--accent)}
+
+.visitors-scroll{
+  overflow-y:auto;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+  padding-right:4px;padding-bottom:4px;
+  align-content:start;
+}
+/* Single visitor — full width */
+.visitors-scroll.solo{grid-template-columns:1fr}
+.visitors-scroll::-webkit-scrollbar{width:3px}
+.visitors-scroll::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:99px}
+
+.visitor-card{
+  background:var(--surface);border:1.5px solid var(--surface2);
+  border-radius:var(--r-md);padding:16px;
+  display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start;
+  transition:border-color var(--tf);
+}
+.visitor-card:focus-within{border-color:var(--ink3)}
+.v-av{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--surface2);border:1.5px solid var(--surface2);
+  display:grid;place-items:center;
+  font:500 18px/1 var(--fb);color:var(--ink2);text-transform:uppercase;
+  transition:background var(--tb),border var(--tb);
+  flex-shrink:0;overflow:hidden;
+}
+.v-av.filled{border-width:4px}
+.v-av svg{color:var(--ink3)}
+.v-fields{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.v-field{display:flex;flex-direction:column;gap:5px}
+.v-field label{
+  font:500 10px/1 var(--fm);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink3);
+}
+.v-field label .req{color:var(--accent)}
+.v-field input,.v-field select{
+  padding:9px 12px;background:var(--bg);
+  border:1.5px solid var(--surface2);border-radius:8px;
+  font:400 15px/1 var(--fb);color:var(--ink);width:100%;
+  transition:border-color var(--tf);
+}
+.v-field input:focus,.v-field select:focus{border-color:var(--ink)}
+.v-field input::placeholder{color:var(--ink4)}
+.v-field select{cursor:pointer;appearance:none}
+.v-field-full{grid-column:1/-1}
+
+/* ============================================================
+   SCREEN 3 — VIBE CARDS
+   ============================================================ */
+.vibe-header{
+  background:var(--surface);border:1.5px solid var(--surface2);
+  border-radius:var(--r-md);padding:16px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;margin-bottom:14px;
+}
+.vibe-whose{
+  display:flex;flex-direction:column;gap:4px;
+}
+.vibe-whose-name{
+  font:500 22px/1.2 var(--fb);color:var(--ink);
+}
+.vibe-whose-name .name{color:var(--accent)}
+.vibe-whose-sub{
+  font:400 14px/1.4 var(--fb);color:var(--ink2);max-width:520px;
+}
+.vibe-prog{
+  font:500 13px/1 var(--fm);letter-spacing:.06em;color:var(--ink3);flex-shrink:0;
+}
+
+.carousel-wrap{
+  flex:1;overflow:hidden;position:relative;
+}
+.vibe-carousel{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(2,1fr);
+  gap:12px;
+  padding:16px 0 8px;height:100%;
+}
+
+.vibe-card{
+  border-radius:20px;border:none;min-width:0;
+  padding:18px 16px 14px 16px;
+  cursor:pointer;display:flex;flex-direction:column;
+  justify-content:flex-start;
+  transition:transform var(--tb) var(--ease-spring),box-shadow var(--tb) var(--ease-out);
+  text-align:left;color:#F4EFE2;position:relative;
+}
+.vibe-card:hover{transform:translateY(-4px)}
+.vibe-card.selected{
+  transform:translateY(-8px);
+  box-shadow:0 8px 28px rgba(0,0,0,.3);
+}
+.vibe-card:active{transform:scale(.97)}
+.vc-icon{position:absolute;top:-8px;left:-8px;pointer-events:none}
+.vc1 .vc-icon{top:-10px;left:-8px}
+.vc5 .vc-icon{top:-8px;left:-10px}
+.vc-icon img{display:block;height:180px;width:auto;object-fit:contain;filter:brightness(0) invert(1) sepia(10%)}
+.vc-top{display:flex;flex-direction:column;gap:5px;margin-top:auto}
+.vc-title{font:600 17px/1.15 var(--fb);color:#F4EFE2}
+.vc-desc{font:500 13px/1.5 var(--fb);color:rgba(244,239,226,0.75);margin-top:2px}
+.vc-tags{
+  font:500 10px/1.2 var(--fm);letter-spacing:.03em;
+  text-transform:uppercase;color:rgba(244,239,226,0.75);margin-top:14px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.vc-check{
+  position:absolute;top:12px;right:12px;
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(255,255,255,.25);display:grid;place-items:center;
+  opacity:0;transition:opacity var(--tf);
+}
+.vibe-card.selected .vc-check{opacity:1}
+.vc1{background:#583DA8}.vc2{background:#863576}.vc3{background:#662433}.vc4{background:#226184}
+.vc5{background:#5C2751}.vc6{background:#906983}.vc7{background:#55427C}.vc8{background:#2B428D}
+
+/* ============================================================
+   SCREEN 4 — DURATION
+   ============================================================ */
+.dur-grid{display:flex;gap:14px;flex:1;align-items:center}
+.dur-card{
+  flex:1;display:flex;flex-direction:column;justify-content:space-between;
+  padding:28px 26px;height:100%;max-height:340px;
+  background:var(--surface);border:2px solid transparent;border-radius:var(--r-lg);
+  cursor:pointer;text-align:left;color:var(--ink);
+  transition:border-color var(--tb) var(--ease-out),background var(--tf),transform var(--tf) var(--ease-spring);
+}
+.dur-card:hover{border-color:var(--ink3);transform:translateY(-3px)}
+.dur-card.selected{background:rgba(200,53,27,.06);border-color:var(--accent)}
+.dur-card:active{transform:scale(.98)}
+.dur-top{}
+.dur-time{font:400 72px/1 var(--fd);color:var(--ink);letter-spacing:-.02em;margin-bottom:10px}
+.dur-name{font:500 22px/1.2 var(--fb);color:var(--ink);margin-bottom:8px}
+.dur-desc{font:400 15px/1.5 var(--fb);color:var(--ink2)}
+.dur-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:16px}
+.dur-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 12px;background:var(--bg);border:1px solid var(--surface2);
+  border-radius:var(--r-pill);
+  font:500 11px/1 var(--fm);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);
+}
+.dur-card.selected .dur-pill{background:rgba(200,53,27,.08);border-color:rgba(200,53,27,.3);color:var(--accent)}
+.dur-popular{
+  padding:4px 10px;background:var(--accent);border-radius:var(--r-pill);
+  font:500 10px/1 var(--fm);letter-spacing:.08em;text-transform:uppercase;color:#fff;
+}
+
+/* ============================================================
+   SCREEN 5 — GENERATING + ACCOUNTS
+   ============================================================ */
+.gen-cards-row{
+  display:flex;gap:12px;align-items:stretch;margin-top:32px;
+}
+.gen-cards-row > *{flex:1;min-width:0}
+.gen-anim-row{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.printer-svg-wrap{width:80px;height:64px;flex-shrink:0}
+.gen-dots{display:flex;align-items:center;gap:6px}
+.gen-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--accent);
+  animation:gdot 1.4s ease-in-out infinite;
+}
+.gen-dot:nth-child(2){animation-delay:.2s}
+.gen-dot:nth-child(3){animation-delay:.4s}
+@keyframes gdot{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+.gen-status{font:500 12px/1 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.gen-title{
+  font:400 56px/1 var(--fd);color:var(--ink);
+  letter-spacing:-.015em;transition:opacity var(--ts) var(--ease-out);
+}
+.gen-sub{font:400 18px/1.55 var(--fb);color:var(--ink2);max-width:440px}
+.gen-ready-btn{
+  display:none;align-self:flex-start;margin-top:8px;
+  animation:fadein .4s var(--ease-out) forwards;
+}
+.gen-ready-btn.show{display:inline-flex}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.gen-right{
+  display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:4px;
+}
+.gen-right::-webkit-scrollbar{width:3px}
+.gen-right::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:99px}
+.ac-label{
+  font:500 11px/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);
+}
+.ac-feature{
+  background:var(--cobalt-l);border:1.5px solid var(--cobalt-b);
+  border-radius:var(--r-lg);padding:22px;
+}
+.ac-feature-meta{
+  font:500 11px/1 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:#5A6A8A;margin-bottom:8px;
+}
+.ac-feature-title{
+  font:400 24px/1.1 var(--fd);color:var(--ink);letter-spacing:-.01em;margin-bottom:8px;
+}
+.ac-feature-sub{font:400 14px/1.55 var(--fb);color:var(--ink2);margin-bottom:14px}
+.email-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;background:#fff;border:1.5px solid var(--cobalt-b);
+  border-radius:var(--r-pill);font:500 13px/1 var(--fm);color:var(--ink);letter-spacing:.02em;
+}
+.perks-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.perk-card{
+  background:var(--surface);border:1.5px solid var(--surface2);
+  border-radius:var(--r-md);padding:14px;
+}
+.perk-icon{width:26px;height:26px;color:var(--accent);margin-bottom:8px}
+.perk-title{font:500 13px/1.3 var(--fb);color:var(--ink);margin-bottom:4px}
+.perk-desc{font:500 14px/1.5 var(--fb);color:var(--ink2)}
+
+/* Printer SVG animation */
+.paper-top{animation:paper-t 2.2s ease-in-out infinite}
+@keyframes paper-t{0%,100%{transform:translateY(0)}40%,65%{transform:translateY(-6px)}}
+.paper-out{animation:paper-o 2.2s ease-in-out infinite .3s}
+@keyframes paper-o{0%,100%{transform:translateY(0)}40%,65%{transform:translateY(5px)}}
+.print-led{animation:pled 1s ease-in-out infinite}
+@keyframes pled{0%,100%{opacity:1}50%{opacity:.25}}
+.pline1{stroke-dasharray:30;stroke-dashoffset:30;animation:pline 2.2s ease-in-out infinite}
+.pline2{stroke-dasharray:22;stroke-dashoffset:22;animation:pline 2.2s ease-in-out infinite .3s}
+.pline3{stroke-dasharray:16;stroke-dashoffset:16;animation:pline 2.2s ease-in-out infinite .6s}
+@keyframes pline{0%,10%{stroke-dashoffset:30}50%,90%{stroke-dashoffset:0}100%{stroke-dashoffset:30}}
+
+/* ============================================================
+   SCREEN 6 — GROUP PHOTO
+   ============================================================ */
+.photo-layout{display:flex;flex-direction:column;flex:1;gap:16px}
+.photo-stage{
+  flex:1;background:var(--surface);border:2px solid var(--surface2);
+  border-radius:var(--r-lg);position:relative;display:grid;place-items:center;overflow:hidden;
+}
+.vf{
+  position:absolute;inset:18px;
+  border:1.5px dashed var(--ink4);border-radius:12px;pointer-events:none;
+}
+.vf::before,.vf::after{
+  content:'';position:absolute;width:28px;height:28px;border:2.5px solid var(--accent);
+}
+.vf::before{top:-2px;left:-2px;border-right:none;border-bottom:none;border-radius:3px 0 0 0}
+.vf::after{bottom:-2px;right:-2px;border-left:none;border-top:none;border-radius:0 0 3px 0}
+.photo-avs{display:flex;gap:10px;align-items:flex-end;z-index:2}
+.photo-av{display:flex;flex-direction:column;align-items:center;gap:6px}
+.photo-av-c{
+  width:72px;height:72px;border-radius:50%;border:2.5px solid var(--bg);
+  display:grid;place-items:center;
+  font:500 24px/1 var(--fb);text-transform:uppercase;color:var(--ink);
+  box-shadow:0 2px 8px rgba(50,49,49,.12);
+}
+.photo-av-n{font:500 11px/1 var(--fm);letter-spacing:.06em;color:var(--ink2);text-transform:uppercase}
+.photo-stamp{
+  position:absolute;bottom:24px;left:0;right:0;text-align:center;
+  font:400 11px/1 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);
+}
+.shutter{
+  position:absolute;bottom:48px;right:48px;
+  width:64px;height:64px;border-radius:50%;
+  background:var(--accent);border:4px solid #fff;
+  box-shadow:0 0 0 2px var(--accent),0 4px 18px rgba(200,53,27,.38);
+  cursor:pointer;display:grid;place-items:center;z-index:4;color:#fff;
+  transition:transform var(--tf) var(--ease-spring),box-shadow var(--tf);
+}
+.shutter:hover{transform:scale(1.06);box-shadow:0 0 0 2px var(--accent),0 6px 22px rgba(200,53,27,.48)}
+.shutter:active{transform:scale(.93)}
+.photo-flash{
+  position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:10;
+}
+.photo-flash.go{animation:flash .6s ease}
+@keyframes flash{0%{opacity:0}15%{opacity:.9}100%{opacity:0}}
+#cameraFeed{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:none;border-radius:inherit;
+  transform:scaleX(-1);
+}
+#camError{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;color:var(--ink2);font:400 14px/1.5 var(--fb);text-align:center;
+  padding:24px;z-index:2;
+}
+#camError.show{display:flex}
+#cameraCanvas{display:none}
+.photo-taken-wrap{
+  display:none;flex-direction:column;align-items:center;gap:6px;z-index:2;
+}
+.photo-taken-wrap.show{display:flex}
+.polaroid-sm{
+  padding:8px 8px 28px;background:#fff;
+  transform:rotate(-1.5deg);box-shadow:0 4px 18px rgba(50,49,49,.12);border-radius:3px;
+}
+.polaroid-sm-inner{
+  width:240px;height:180px;
+  display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;overflow:hidden;
+}
+.pol-mini{
+  width:52px;height:52px;border-radius:50%;
+  display:grid;place-items:center;
+  font:500 18px/1 var(--fb);text-transform:uppercase;color:var(--ink);
+}
+
+/* ============================================================
+   SCREEN 7 — FIRST STOP
+   ============================================================ */
+.final-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1;overflow:hidden;
+}
+.final-left{display:flex;flex-direction:column;justify-content:center;gap:14px}
+.final-photo-area{display:flex;justify-content:flex-start}
+.final-polaroid{
+  padding:10px 10px 36px;background:#fff;
+  transform:rotate(-2deg);box-shadow:0 6px 26px rgba(50,49,49,.13);border-radius:3px;max-width:260px;
+}
+.final-pol-inner{
+  width:240px;height:180px;display:flex;align-items:center;
+  justify-content:center;gap:6px;flex-wrap:wrap;overflow:hidden;
+}
+.final-pol-av{
+  width:54px;height:54px;border-radius:50%;
+  display:grid;place-items:center;font:500 19px/1 var(--fb);
+  text-transform:uppercase;color:var(--ink);
+}
+.final-gname{font:400 54px/.96 var(--fd);color:var(--ink);letter-spacing:-.02em}
+.final-gname em{color:var(--accent)}
+.final-ready{font:400 38px/1.05 var(--fd);color:var(--ink);letter-spacing:-.015em}
+.final-sub{font:400 18px/1.5 var(--fb);color:var(--ink2)}
+
+.final-right{display:flex;flex-direction:column;justify-content:center;gap:12px}
+.stop-card{
+  background:var(--surface);border:1.5px solid var(--surface2);
+  border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-card);
+}
+.stop-art{
+  width:100%;height:200px;
+  display:grid;place-items:center;position:relative;overflow:hidden;
+}
+.stop-art-inner{
+  position:relative;z-index:2;text-align:center;
+  display:flex;flex-direction:column;gap:6px;
+}
+.stop-art-name{
+  font:500 16px/1.3 var(--fb);color:rgba(0,0,0,.4);
+}
+.stop-art-artist{
+  font:400 13px/1 var(--fm);letter-spacing:.06em;color:rgba(0,0,0,.3);
+}
+.stop-art-deco1{
+  position:absolute;width:180px;height:180px;border-radius:50%;
+  border:1px solid rgba(0,0,0,.08);top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.stop-art-deco2{
+  position:absolute;width:110px;height:110px;border-radius:50%;
+  border:1px solid rgba(0,0,0,.08);top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.stop-info{padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.stop-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 11px;background:var(--accent-l);
+  border-radius:var(--r-pill);border:1px solid rgba(200,53,27,.2);
+  font:500 10px/1 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  align-self:flex-start;margin-bottom:2px;
+}
+.stop-floor{font:500 11px/1 var(--fm);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.stop-gallery{font:400 13px/1.3 var(--fb);color:var(--ink2)}
+.stop-title{font:500 22px/1.2 var(--fb);color:var(--ink)}
+
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.hidden{display:none!important}
+.fade-up{
+  opacity:0;transform:translateY(8px);
+  transition:opacity var(--ts) var(--ease-out),transform var(--ts) var(--ease-out);
+}
+.fade-up.in{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- WELCOME BACKGROUND SLIDESHOW (covers full app incl. nav) -->
+  <div class="welcome-bg" id="welcomeBg">
+    <img class="welcome-bg-img active" src="./SAM Game Design System/assets/bg1.png" alt="">
+    <img class="welcome-bg-img" src="./SAM Game Design System/assets/bg2.png" alt="">
+    <img class="welcome-bg-img" src="./SAM Game Design System/assets/bg3.png" alt="">
+  </div>
+
+  <!-- TOP NAV -->
+  <nav class="nav">
+    <div class="logo">
+      <img class="logo-img" src="./SAM Game Design System/assets/sam-logo-inverted.png" alt="SAM">
+      <span class="logo-dot"></span>
+      <span class="logo-name">Art Trail</span>
+    </div>
+    <div class="prog-wrap" id="progWrap">
+      <div class="prog-dot" id="pd0"></div>
+      <div class="prog-dot" id="pd1"></div>
+      <div class="prog-dot" id="pd2"></div>
+      <div class="prog-dot" id="pd3"></div>
+    </div>
+  </nav>
+
+  <div class="screens">
+
+    <!-- ===================== SCREEN 0 — WELCOME ===================== -->
+    <section class="screen active" id="s0">
+      <div class="welcome-grid">
+        <div class="welcome-left">
+          <div class="welcome-hello">Hello!</div>
+          <h1 class="welcome-h1">Welcome to the SAM <em>Art Trail.</em></h1>
+          <p class="welcome-lede">A quick two-minute setup creates a personalized path for your group through the museum.</p>
+          <hr class="welcome-rule">
+          <div class="welcome-btns">
+            <button class="entry-btn" onclick="goTo(1)">
+              <div class="e-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V7a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a2 2 0 0 0 0 4v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2a2 2 0 0 0 0-4z"/><line x1="9" y1="6" x2="9" y2="18" stroke-dasharray="2 2"/></svg>
+              </div>
+              <div><div class="e-title">I have tickets</div><div class="e-sub">Scan the QR from your email or phone</div></div>
+            </button>
+            <button class="entry-btn" onclick="goTo(1)">
+              <div class="e-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              </div>
+              <div><div class="e-title">Buy tickets here</div><div class="e-sub">We'll handle tickets and your trail in one go</div></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 1 — GROUP SIZE ===================== -->
+    <section class="screen" id="s1">
+      <div class="s-label">01 &nbsp;YOUR GROUP</div>
+      <h1 style="font:400 52px/1 var(--fd);letter-spacing:-.015em;color:var(--ink);margin-bottom:10px">Tell us who's visiting.</h1>
+      <p style="font:400 17px/1.5 var(--fb);color:var(--ink2);margin-bottom:0">Select the size of your group.</p>
+      <div class="size-grid" id="sizeGrid">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="size-extras" id="sizeExtras">
+        <div class="field-group" id="sizeNumWrap" style="display:none">
+          <label class="field-label">How many? <span class="req">*</span></label>
+          <input class="field-input num" id="sizeNumInput" type="number" min="6" max="99" value="6"
+            oninput="state.customSize=parseInt(this.value)||6;initVisitors()">
+        </div>
+        <div class="field-group full-width" id="groupNameWrap">
+          <label class="field-label">Group name</label>
+          <input class="field-input name" id="groupNameInput" type="text" maxlength="35"
+            placeholder="e.g. The Chen Family" oninput="onGroupNameInput(this.value)">
+          <div class="char-hint" id="groupNameCount">0 / 35</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="goTo(0)">← back</button>
+        <button class="btn btn-primary" onclick="goTo(2)">Next →</button>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 2 — QUICK INTROS ===================== -->
+    <section class="screen" id="s2">
+      <div class="s-label">02 &nbsp;ACCOUNT SETUP</div>
+      <div class="intros-grid">
+        <div class="intros-left">
+          <h1 class="t-display-sm" style="font:400 42px/1.05 var(--fd);color:var(--ink);letter-spacing:-.015em">Quick intros</h1>
+          <p class="intros-lede">We'll use your name and email to collect your experience across the museum and send your group a recap afterward.</p>
+          <div class="req-note"><span class="dot">*</span> Required fields</div>
+        </div>
+        <div class="visitors-scroll" id="visitorCards">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="goTo(1)">← back</button>
+        <button class="btn btn-primary" id="introsContinue" disabled onclick="goTo(3)">Next →</button>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 3 — VIBE CARDS ===================== -->
+    <section class="screen" id="s3">
+      <div class="s-label">03 &nbsp;VIBE CHECK</div>
+      <div class="vibe-header">
+        <div class="vibe-whose">
+          <div class="vibe-whose-name"><span class="name" id="vibeName">Alex</span>, pick the card that feels like you today</div>
+          <div class="vibe-whose-sub">Your pick shapes the route, the depth and the kind of art you'll lean into</div>
+        </div>
+        <div class="vibe-prog" id="vibeProg">01 / 03</div>
+      </div>
+      <div class="carousel-wrap">
+        <div class="vibe-carousel" id="vibeCarousel">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="goTo(2)">← back</button>
+        <button class="btn btn-primary" id="vibeNext" disabled onclick="vibeAdvance()">pass to next →</button>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 4 — DURATION ===================== -->
+    <section class="screen" id="s4">
+      <div class="s-label">04 &nbsp;DURATION</div>
+      <h1 style="font:400 52px/1 var(--fd);letter-spacing:-.015em;color:var(--ink);margin-bottom:8px">How long are you here?</h1>
+      <p style="font:400 17px/1.5 var(--fb);color:var(--ink2);margin-bottom:0">We'll shape the trail around your time. You can always start where you left off on your next visit.</p>
+      <div class="dur-grid" id="durGrid">
+        <button class="dur-card" data-mins="45" onclick="setDur(45)">
+          <div class="dur-top">
+            <div class="dur-time">45m</div>
+            <div class="dur-name">Highlights trail</div>
+            <div class="dur-desc">The can't-miss stops for a quick visit.</div>
+          </div>
+          <div class="dur-bottom">
+            <span class="dur-pill">
+              6 stops
+            </span>
+          </div>
+        </button>
+        <button class="dur-card selected" data-mins="90" onclick="setDur(90)">
+          <div class="dur-top">
+            <div class="dur-time">1.5h</div>
+            <div class="dur-name">Explorer trail</div>
+            <div class="dur-desc">A balanced route with time to wander and pause.</div>
+          </div>
+          <div class="dur-bottom">
+            <span class="dur-pill">
+              12 stops
+            </span>
+            <span class="dur-popular">Most popular</span>
+          </div>
+        </button>
+        <button class="dur-card" data-mins="180" onclick="setDur(180)">
+          <div class="dur-top">
+            <div class="dur-time">3h</div>
+            <div class="dur-name">Full trail</div>
+            <div class="dur-desc">Multiple galleries with optional discoveries along the way.</div>
+          </div>
+          <div class="dur-bottom">
+            <span class="dur-pill">
+              20 stops
+            </span>
+          </div>
+        </button>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="goTo(3)">← back</button>
+        <button class="btn btn-primary" onclick="goTo(5)">build our trail →</button>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 5 — GENERATING + ACCOUNTS ===================== -->
+    <section class="screen" id="s5">
+      <div class="s-label">05 &nbsp;YOUR GUIDES</div>
+      <h1 id="genTitle" style="font:400 52px/1 var(--fd);letter-spacing:-.015em;color:var(--ink);margin-bottom:8px">Your guides are ready.</h1>
+      <p id="genSub" style="font:400 17px/1.5 var(--fb);color:var(--ink2);margin-bottom:0;white-space:nowrap">Your personalized guide is printing now, here's how to use it during your visit.</p>
+      <div class="gen-cards-row">
+        <div class="ac-feature">
+          <div class="ac-feature-meta">Check Your Inbox</div>
+          <div class="ac-feature-title">Find everything you make today saved.</div>
+          <div class="ac-feature-sub">Find your SAM account in your inbox and access it through the sign-in link.</div>
+        </div>
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="perk-title">Bookmark art</div>
+          <div class="perk-desc">Tap save on any artwork. Stays in your account forever.</div>
+        </div>
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="perk-title">View what you make</div>
+          <div class="perk-desc">Moodboards, sketches, notes. All in one place.</div>
+        </div>
+        <div class="perk-card">
+          <div class="perk-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor"/><circle cx="3" cy="12" r="1" fill="currentColor"/><circle cx="3" cy="18" r="1" fill="currentColor"/></svg>
+          </div>
+          <div class="perk-title">Custom art board + playlist</div>
+          <div class="perk-desc">Based on what you see today, sent after your visit.</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="goTo(4)">← back</button>
+        <button class="btn btn-primary gen-ready-btn show" id="genReadyBtn" onclick="goTo(6)">take your guides →</button>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 6 — GROUP PHOTO ===================== -->
+    <section class="screen" id="s6">
+      <h1 style="font:400 48px/1 var(--fd);letter-spacing:-.015em;color:var(--ink);margin-bottom:8px">Take a picture together!</h1>
+      <p style="font:400 17px/1.5 var(--fb);color:var(--ink2);margin-bottom:0">Get a picture with our clouds before you head in!</p>
+      <div class="photo-layout" style="margin-top:16px">
+        <div class="photo-stage" id="photoStage">
+          <video id="cameraFeed" autoplay playsinline muted></video>
+          <canvas id="cameraCanvas"></canvas>
+          <div class="vf"></div>
+          <!-- After photo: polaroid -->
+          <div class="photo-taken-wrap" id="photoTakenWrap">
+            <div class="polaroid-sm">
+              <div class="polaroid-sm-inner" id="polaroidInner"></div>
+            </div>
+          </div>
+          <div class="photo-stamp">SAM · Art Trail · 2026</div>
+          <!-- Shutter button -->
+          <button class="shutter" id="shutterBtn" onclick="takePhoto()">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </button>
+          <div class="photo-flash" id="photoFlash"></div>
+        </div>
+        <div class="actions" style="margin-top:0;padding-top:12px">
+          <button class="btn btn-ghost" onclick="goTo(5)">← back</button>
+          <button class="btn btn-ghost" onclick="skipPhoto()">skip</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCREEN 7 — FIRST STOP ===================== -->
+    <section class="screen" id="s7">
+      <div class="final-grid">
+        <div class="final-left">
+          <div class="final-photo-area" id="finalPhotoArea">
+            <!-- Polaroid or group name, rendered by JS -->
+          </div>
+          <div>
+            <div class="final-ready" id="finalReady">you're all set.</div>
+            <div class="final-sub" style="margin-top:8px">Have a great time!</div>
+          </div>
+        </div>
+        <div class="final-right">
+          <div class="stop-card" id="firstStopCard">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /screens -->
+</div><!-- /app -->
+
+<script>
+/* ============================================================
+   WELCOME BACKGROUND SLIDESHOW
+   ============================================================ */
+(function(){
+  const imgs = document.querySelectorAll('.welcome-bg-img');
+  if(!imgs.length) return;
+  let cur = 0;
+  setInterval(function(){
+    imgs[cur].classList.remove('active');
+    cur = (cur + 1) % imgs.length;
+    imgs[cur].classList.add('active');
+  }, 6000);
+})();
+
+/* ============================================================
+   DATA
+   ============================================================ */
+const CARDS = [
+  { id:1, cls:'vc1', title:'Main Character',       desc:"You're not just visiting the museum — you're part of the scene.",      tags:'Bold · Drama · Presence',          png:'vc-main-character.png',        stopKey:1 },
+  { id:2, cls:'vc2', title:'Deep Lore',             desc:'You love context, symbolism, and hidden stories.',                     tags:'History · Narrative · Meaning',    png:'vc-deep-lore.png',             stopKey:2 },
+  { id:3, cls:'vc3', title:'Aesthetic First',       desc:"You're drawn to beauty, craft, and visual harmony.",                   tags:'Composition · Design · Detail',    png:'vc-aesthetic-first.png',       stopKey:3 },
+  { id:4, cls:'vc4', title:'Soft Life',             desc:'You want calm, comfort, and emotional ease.',                          tags:'Nature · Stillness · Cozy energy', png:'vc-soft-life.png',             stopKey:4 },
+  { id:5, cls:'vc5', title:'This Is Political',     desc:'You connect with work that says something about the world.',           tags:'Power · Identity · Justice',       png:'vc-this-is-political.png',     stopKey:5 },
+  { id:6, cls:'vc6', title:'For the Plot',          desc:'You want surprise, chaos, and memorable experiences.',                 tags:'Unexpected · Strange · Fun',       png:'vc-for-the-plot.png',          stopKey:6 },
+  { id:7, cls:'vc7', title:'Emotionally Detached',  desc:"You're sceptical but curious enough to explore.",                     tags:'Minimal · Provocative · Dry humor',png:'vc-emotionally-detached.png',  stopKey:7 },
+  { id:8, cls:'vc8', title:'Ghibli Kid',            desc:'You find magic and spirit in everyday things.',                       tags:'Dreamlike · Mythical · Wonder',    png:'vc-ghibli-kid.png',            stopKey:8 },
+];
+
+const ICONS = {
+  star:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  book:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+  eye:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  cloud:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`,
+  megaphone:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`,
+  zap:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  minus:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
+  sparkle:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg>`,
+  person:`<svg viewBox="0 0 20 22" fill="currentColor"><circle cx="10" cy="6" r="4.5"/><path d="M1 21C1 16 5 13 10 13s9 3 9 8"/></svg>`,
+  check:`<svg viewBox="0 0 12 12" fill="none" stroke="#F4EFE2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>`,
+};
+
+const STOPS = {
+  1:[{gallery:'Gallery 108',floor:'Floor 1',title:'Saint Catherine of Alexandria',artist:'Caravaggio, c.1598',bg:'#C4A882',why:'Drama, light, gaze straight at you.'},
+     {gallery:'Gallery 104',floor:'Floor 1',title:'Madame X',artist:'John Singer Sargent, 1884',bg:'#8A7264',why:'Iconic portrait energy.'},
+     {gallery:'Gallery 211',floor:'Floor 2',title:'Equestrian Portrait',artist:'Kehinde Wiley, 2016',bg:'#4A6840',why:'Heroic scale, contemporary remix.'},
+     {gallery:'Gallery 116',floor:'Floor 1',title:'Portrait of a Young Woman',artist:'Titian, c.1530',bg:'#7A6048',why:'Renaissance gravitas.'},
+     {gallery:'Gallery 214',floor:'Floor 2',title:'Self-Portrait with Cropped Hair',artist:'Frida Kahlo, 1940',bg:'#8A4840',why:'Unflinching self-examination.'},
+     {gallery:'Gallery 206',floor:'Floor 2',title:'The Swimming Hole',artist:'Thomas Eakins, 1885',bg:'#6A8490',why:'Raw, unidealized presence.'}],
+  2:[{gallery:'Gallery 304',floor:'Floor 3',title:'Hindu Temple Sculpture',artist:'South India, 11th c.',bg:'#C8A870',why:'Centuries of myth on its surface.'},
+     {gallery:'Gallery 116',floor:'Floor 1',title:'Madonna of the Magnificat',artist:'Botticelli, c.1481',bg:'#B09070',why:'Layers of symbol, faith, politics.'},
+     {gallery:'Gallery 401',floor:'Floor 4',title:'Yoruba Beadwork Crown',artist:'Nigeria, 19th c.',bg:'#6080A0',why:'Power, lineage, hidden codes.'},
+     {gallery:'Gallery 305',floor:'Floor 3',title:'Tlingit Ceremonial Regalia',artist:'Pacific Northwest Coast',bg:'#708060',why:'Story, ancestor, function — all at once.'},
+     {gallery:'Gallery 402',floor:'Floor 4',title:'Greek Black-Figure Vase',artist:'Ancient Athens, 6th c. BCE',bg:'#A06840',why:'Storytelling on terracotta.'},
+     {gallery:'Gallery 118',floor:'Floor 1',title:'Egyptian Coffin Panel',artist:'Late Period, 664–332 BCE',bg:'#C8A040',why:'Ritual and afterlife in pigment.'}],
+  3:[{gallery:'Gallery 304',floor:'Floor 3',title:'The Great Wave off Kanagawa',artist:'Hokusai, c.1831',bg:'#8090B8',why:'Composition perfection.'},
+     {gallery:'Gallery 401',floor:'Floor 4',title:'Kuba Textile Cloth',artist:'D.R. Congo, 19th c.',bg:'#C8A040',why:'Pattern at its most rhythmic.'},
+     {gallery:'Gallery 209',floor:'Floor 2',title:'Tiffany Glass Collection',artist:'Louis Comfort Tiffany',bg:'#80B8A0',why:'Colour study, in 3D.'},
+     {gallery:'Gallery 212',floor:'Floor 2',title:'Color Field Works',artist:'Mark Rothko, 1950s',bg:'#B84020',why:'Pure, slow colour.'},
+     {gallery:'Gallery 307',floor:'Floor 3',title:'Iris, Peonies, Canary',artist:'Ogata Kōrin, c.1700',bg:'#6080A0',why:'Radical negative space.'},
+     {gallery:'Gallery 208',floor:'Floor 2',title:'Ardabil Carpet',artist:'Persia, 16th c.',bg:'#603060',why:'Infinite symmetry.'}],
+  4:[{gallery:'Gallery 109',floor:'Floor 1',title:'Spring Bouquet',artist:'Pierre-Auguste Renoir, 1866',bg:'#D0B8C0',why:'Romantic light, soft colour, intimate scale.'},
+     {gallery:'Gallery 112',floor:'Floor 1',title:'Water Lilies',artist:'Claude Monet, 1906',bg:'#8090A8',why:'Dreamy, atmospheric anchor.'},
+     {gallery:'Gallery 304',floor:'Floor 3',title:'Tale of Genji Handscroll',artist:'Tosa School, c.1510',bg:'#D8C0A0',why:'Quiet, narrative, gorgeous.'},
+     {gallery:'Gallery 205',floor:'Floor 2',title:'Mother and Child',artist:'Mary Cassatt, 1890',bg:'#C0A898',why:'Tender, warm, intimate.'},
+     {gallery:'Gallery 110',floor:'Floor 1',title:'Garden at Argenteuil',artist:'Claude Monet, 1873',bg:'#90B080',why:'Sun-dappled peace.'},
+     {gallery:'Gallery 301',floor:'Floor 3',title:'Pine Tree Screen',artist:'Hasegawa Tōhaku, c.1595',bg:'#B0B898',why:'Mist, emptiness, serenity.'}],
+  5:[{gallery:'Gallery 215',floor:'Floor 2',title:'Guernica (Study)',artist:'Pablo Picasso, 1937',bg:'#888880',why:'War as abstracted horror.'},
+     {gallery:'Gallery 220',floor:'Floor 2',title:'Spider (Maman)',artist:'Louise Bourgeois, 1999',bg:'#808890',why:'Surreal power, maternal strength.'},
+     {gallery:'Gallery 309',floor:'Floor 3',title:'Pour Your Body Out',artist:'Pipilotti Rist, 2008',bg:'#C080C0',why:'Sensory immersion, feminism.'},
+     {gallery:'Gallery 222',floor:'Floor 2',title:'Collage Works',artist:'Wangechi Mutu, 2003',bg:'#905080',why:'Body, power, hybrid forms.'},
+     {gallery:'Gallery 213',floor:'Floor 2',title:'American People Series',artist:'Faith Ringgold, 1963',bg:'#C04020',why:'Race, history, storytelling.'},
+     {gallery:'Gallery 218',floor:'Floor 2',title:'Some/One',artist:'Do Ho Suh, 2001',bg:'#7090A8',why:'Identity made of a thousand selves.'}],
+  6:[{gallery:'Gallery 213',floor:'Floor 2',title:'Infinity Mirrored Room',artist:'Yayoi Kusama, 2013',bg:'#D040A0',why:'Loud, immersive, unmissable.'},
+     {gallery:'Gallery 207',floor:'Floor 2',title:'Drowning Girl',artist:'Roy Lichtenstein, 1963',bg:'#4080C0',why:'Colour, attitude, irreverence.'},
+     {gallery:'Gallery 215',floor:'Floor 2',title:'Triple Point (Planetarium)',artist:'Sarah Sze, 2013',bg:'#809070',why:'Beautifully unhinged.'},
+     {gallery:'Gallery 309',floor:'Floor 3',title:'Retroactive I',artist:'Robert Rauschenberg, 1964',bg:'#C89060',why:'Collaged chaos, pure energy.'},
+     {gallery:'Gallery 305',floor:'Floor 3',title:'Self-Portrait (Pervert)',artist:'Catherine Opie, 1994',bg:'#8060A0',why:'Bold, confrontational, direct.'},
+     {gallery:'Gallery 216',floor:'Floor 2',title:"Campbell's Soup Cans",artist:'Andy Warhol, 1962',bg:'#E04030',why:"Commodity as art, art as joke."}],
+  7:[{gallery:'Gallery 304',floor:'Floor 3',title:'Zen Ink Scroll',artist:'Japan, 14th c.',bg:'#A0A090',why:'Built for slow looking.'},
+     {gallery:'Gallery 212',floor:'Floor 2',title:'Untitled #3',artist:'Agnes Martin, 1974',bg:'#D0D0C8',why:'Quiet grids, patient breath.'},
+     {gallery:'Gallery 218',floor:'Floor 2',title:'Bird in Space',artist:'Constantin Brâncuși, 1928',bg:'#D8C8A0',why:'Pure, contemplative form.'},
+     {gallery:'Gallery 109',floor:'Floor 1',title:'Young Woman with a Water Jug',artist:'After Vermeer, c.1662',bg:'#A09880',why:'Hushed domestic moment.'},
+     {gallery:'Gallery 214',floor:'Floor 2',title:'Black Square',artist:'Kazimir Malevich, 1915',bg:'#484840',why:'Radical nothingness.'},
+     {gallery:'Gallery 211',floor:'Floor 2',title:'Double Negative (doc.)',artist:'Michael Heizer, 1969',bg:'#909888',why:'Absence as sculpture.'}],
+  8:[{gallery:'Gallery 401',floor:'Floor 4',title:'Benin Bronze Plaques',artist:'Nigeria, 16th c.',bg:'#C8A040',why:'A whole kingdom in metal.'},
+     {gallery:'Gallery 304',floor:'Floor 3',title:'Tang Dynasty Ceramic Horse',artist:'China, 618–907 CE',bg:'#C8A880',why:'Funerary art with story.'},
+     {gallery:'Gallery 402',floor:'Floor 4',title:'Greek Black-Figure Vase',artist:'Athens, 6th c. BCE',bg:'#A06840',why:'Storytelling on terracotta.'},
+     {gallery:'Gallery 305',floor:'Floor 3',title:'Pre-Columbian Textiles',artist:'Peru, c.800–1400 CE',bg:'#A04060',why:'Codes that outlasted empires.'},
+     {gallery:'Gallery 304',floor:'Floor 3',title:'Kannon Bodhisattva',artist:'Japan, 12th c.',bg:'#D0C0A0',why:'Merciful, transcendent gaze.'},
+     {gallery:'Gallery 302',floor:'Floor 3',title:'Animals and Flowers Screen',artist:'Itō Jakuchū, c.1766',bg:'#70A870',why:'Spirit in every petal.'}],
+};
+
+const DEMO = [
+  {firstName:'Alex',  lastName:'Chen',  email:'alex@example.com',  age:'18+'},
+  {firstName:'Sam',   lastName:'Park',  email:'sam@example.com',   age:'18+'},
+  {firstName:'Jordan',lastName:'Lee',   email:'jordan@example.com',age:'18+'},
+  {firstName:'Riley', lastName:'Kim',   email:'riley@example.com', age:'13–17'},
+  {firstName:'Casey', lastName:'Liu',   email:'casey@example.com', age:'18+'},
+];
+
+const AV_COLORS = ['#f3b0c3','#b9cbe8','#dbe6db','#fee1e8','#f9e9d5'];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  step: 0,
+  prev: 0,
+  groupSize: 3,
+  customSize: 6,
+  groupName: 'The dreamers',
+  visitors: [],
+  cardPickIdx: 0,
+  duration: 90,
+  photoTaken: false,
+  photoDataURL: null,
+};
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+let transitioning = false;
+function goTo(idx) {
+  if (transitioning || idx === state.step) return;
+  const dir = idx > state.step ? 1 : -1;
+  const cur = document.getElementById('s' + state.step);
+  const nxt = document.getElementById('s' + idx);
+  if (!cur || !nxt) return;
+  transitioning = true;
+  const DUR = 280;
+  cur.style.transition = `opacity ${DUR}ms cubic-bezier(0.4,0,1,1), transform ${DUR}ms cubic-bezier(0.4,0,1,1)`;
+  cur.style.opacity = '0';
+  cur.style.transform = `translateX(${-dir * 28}px)`;
+  cur.style.pointerEvents = 'none';
+  nxt.style.transition = 'none';
+  nxt.style.opacity = '0';
+  nxt.style.transform = `translateX(${dir * 28}px)`;
+  nxt.style.pointerEvents = 'none';
+  void nxt.offsetHeight;
+  nxt.style.transition = `opacity ${DUR}ms cubic-bezier(0,0,0.2,1) 40ms, transform ${DUR}ms cubic-bezier(0,0,0.2,1) 40ms`;
+  nxt.style.opacity = '1';
+  nxt.style.transform = 'translateX(0)';
+  nxt.style.pointerEvents = 'all';
+  state.prev = state.step;
+  state.step = idx;
+  updateNav();
+  onEnter(idx);
+  setTimeout(() => {
+    cur.classList.remove('active');
+    cur.style.cssText = '';
+    nxt.classList.add('active');
+    nxt.style.cssText = '';
+    transitioning = false;
+  }, DUR + 60);
+}
+
+/* ============================================================
+   NAV / PROGRESS DOTS
+   ============================================================ */
+// Progress mapping: dot index 0-3 corresponds to step groups
+// 0 = YOUR GROUP (screens 1-2), 1 = VIBE (3), 2 = TIME (4), 3 = DONE (5-8)
+function dotState(dotIdx, screenIdx) {
+  const thresholds = [1, 2, 3, 4]; // screen at which dot becomes "active"
+  const completes  = [2, 3, 4, 9]; // screen at which dot becomes "complete"
+  if (screenIdx === 0) return 'incomplete';
+  if (screenIdx >= completes[dotIdx]) return 'complete';
+  if (screenIdx >= thresholds[dotIdx]) return 'active';
+  return 'incomplete';
+}
+function updateNav() {
+  document.getElementById('progWrap').style.opacity = '1';
+  for (let i = 0; i < 4; i++) {
+    const d = document.getElementById('pd' + i);
+    d.className = 'prog-dot ' + dotState(i, state.step);
+  }
+}
+
+/* ============================================================
+   SCREEN ENTER HOOKS
+   ============================================================ */
+function onEnter(idx) {
+  if (idx !== 6) stopCamera();
+  if (idx === 1) renderSizeGrid();
+  if (idx === 2) { initVisitors(); renderVisitorCards(); }
+  if (idx === 3) startCardPick();
+  if (idx === 5) { renderGenEmail(); runGenerate(); }
+  if (idx === 6) renderPhotoScreen();
+  if (idx === 7) renderFinalScreen();
+}
+
+/* ============================================================
+   SCREEN 1 — GROUP SIZE
+   ============================================================ */
+const SIZE_OPTS = [
+  {n:1, label:'Solo'},
+  {n:2, label:'Pair'},
+  {n:3, label:'Small group'},
+  {n:4, label:'Squad'},
+  {n:'5+', label:'Big group'},
+];
+function renderSizeGrid() {
+  const g = document.getElementById('sizeGrid');
+  g.innerHTML = SIZE_OPTS.map(o => {
+    const n = o.n === '5+' ? 5 : o.n;
+    const sel = (o.n === '5+' && state.groupSize >= 5) || state.groupSize === n;
+    const icons = buildPersonIcons(Math.min(n, 5));
+    return `<button class="size-card${sel?' selected':''}" onclick="selectSize(${o.n === '5+' ? "'5+'" : o.n})">
+      <div class="size-icon-row">${icons}</div>
+      <div class="size-num">${String(n).padStart(2,'0')}${o.n==='5+'?'+':''}</div>
+      <div class="size-lbl">${o.label}</div>
+    </button>`;
+  }).join('');
+  updateSizeExtras();
+}
+function buildPersonIcons(n) {
+  const imgN = Math.min(n, 5);
+  return `<img src="./SAM Game Design System/assets/group${imgN}.png" alt="${n} person${n>1?'s':''}" style="height:26px;width:auto;object-fit:contain;display:block">`;
+}
+function selectSize(val) {
+  if (val === '5+') { state.groupSize = Math.max(5, state.customSize); }
+  else { state.groupSize = val; }
+  renderSizeGrid();
+  // Stay on same page — show extras so user can fill in group name
+}
+function updateSizeExtras() {
+  const ex = document.getElementById('sizeExtras');
+  const numWrap = document.getElementById('sizeNumWrap');
+  const nameWrap = document.getElementById('groupNameWrap');
+  const show5 = state.groupSize >= 5;
+  const anySelected = state.groupSize >= 1;
+  if (anySelected) ex.classList.add('show'); else ex.classList.remove('show');
+  numWrap.style.display = show5 ? '' : 'none';
+  nameWrap.style.display = '';
+  const nameInput = document.getElementById('groupNameInput');
+  if (nameInput) {
+    nameInput.value = state.groupName;
+    document.getElementById('groupNameCount').textContent = state.groupName.length + ' / 35';
+  }
+}
+function onGroupNameInput(val) {
+  state.groupName = val.slice(0, 35);
+  document.getElementById('groupNameCount').textContent = state.groupName.length + ' / 35';
+}
+
+/* ============================================================
+   SCREEN 2 — VISITOR CARDS
+   ============================================================ */
+function initVisitors() {
+  const n = state.groupSize >= 5 ? state.customSize : state.groupSize;
+  state.visitors = DEMO.slice(0, Math.min(n, DEMO.length)).map((d, i) => ({
+    firstName: d.firstName, lastName: d.lastName,
+    email: d.email, age: d.age,
+    card: null,
+    color: AV_COLORS[i % AV_COLORS.length],
+  }));
+  // Pad if more than demo
+  for (let i = state.visitors.length; i < n; i++) {
+    state.visitors.push({ firstName:'', lastName:'', email:'', age:'18+', card:null, color: AV_COLORS[i % AV_COLORS.length] });
+  }
+}
+function renderVisitorCards() {
+  const wrap = document.getElementById('visitorCards');
+  // Solo visitor gets full-width layout
+  wrap.classList.toggle('solo', state.visitors.length === 1);
+  wrap.innerHTML = state.visitors.map((v, i) => {
+    const initials = (v.firstName.charAt(0) + v.lastName.charAt(0)).toUpperCase() || '';
+    const hasFill = initials.length > 0;
+    return `<div class="visitor-card" id="vc${i}">
+      <div class="v-av${hasFill?' filled':''}" id="vav${i}" style="${hasFill?'border-color:'+v.color+';':''}">${hasFill ? initials : ICONS.person}</div>
+      <div class="v-fields">
+        <div class="v-field">
+          <label>First name <span class="req">*</span></label>
+          <input type="text" value="${v.firstName}" placeholder="First name" oninput="onVisField(${i},'firstName',this.value)">
+        </div>
+        <div class="v-field">
+          <label>Last name <span class="req">*</span></label>
+          <input type="text" value="${v.lastName}" placeholder="Last name" oninput="onVisField(${i},'lastName',this.value)">
+        </div>
+        <div class="v-field v-field-full">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" value="${v.email}" placeholder="email@address.com" oninput="onVisField(${i},'email',this.value)">
+        </div>
+        <div class="v-field">
+          <label>Age</label>
+          <select onchange="onVisField(${i},'age',this.value)">
+            <option${v.age==='under 12'?' selected':''}>under 12</option>
+            <option${v.age==='13–17'?' selected':''}>13–17</option>
+            <option${v.age==='18+'?' selected':''} >18+</option>
+          </select>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  checkFormDone();
+}
+function onVisField(idx, field, val) {
+  state.visitors[idx][field] = val;
+  // Update avatar
+  const v = state.visitors[idx];
+  const av = document.getElementById('vav' + idx);
+  if (av) {
+    const initials = (v.firstName.charAt(0) + v.lastName.charAt(0)).toUpperCase();
+    if (initials) {
+      av.textContent = initials;
+      av.classList.add('filled');
+      av.style.borderColor = v.color;
+      av.style.background = '';
+    } else {
+      av.innerHTML = ICONS.person;
+      av.classList.remove('filled');
+      av.style.borderColor = '';
+    }
+  }
+  // Update genEmail if first visitor's email
+  if (idx === 0 && field === 'email') {
+    const ge = document.getElementById('genEmail');
+    if (ge) ge.textContent = val || 'your@email.com';
+  }
+  checkFormDone();
+}
+function checkFormDone() {
+  const ok = state.visitors.every(v => v.firstName.trim() && v.lastName.trim() && v.email.trim());
+  const btn = document.getElementById('introsContinue');
+  if (btn) btn.disabled = !ok;
+}
+
+/* ============================================================
+   SCREEN 3 — VIBE CARDS
+   ============================================================ */
+function startCardPick() {
+  state.cardPickIdx = 0;
+  state.visitors.forEach(v => v.card = null);
+  renderCardPick();
+}
+function renderCardPick() {
+  const carousel = document.getElementById('vibeCarousel');
+  carousel.innerHTML = CARDS.map(c => `
+    <button class="vibe-card ${c.cls}" data-id="${c.id}" onclick="pickCard(${c.id})">
+      <div class="vc-check">${ICONS.check}</div>
+      <div class="vc-icon"><img src="./SAM Game Design System/assets/${c.png}" alt="${c.title}"></div>
+      <div class="vc-top">
+        <div class="vc-title">${c.title}</div>
+        <div class="vc-desc">${c.desc}</div>
+      </div>
+      <div class="vc-tags">${c.tags}</div>
+    </button>
+  `).join('');
+  updateCardPickUI();
+}
+function updateCardPickUI() {
+  const v = state.visitors[state.cardPickIdx];
+  if (!v) return;
+  document.getElementById('vibeName').textContent = v.firstName || 'You';
+  document.getElementById('vibeProg').textContent =
+    String(state.cardPickIdx + 1).padStart(2,'0') + ' / ' + String(state.visitors.length).padStart(2,'0');
+  const isLast = state.cardPickIdx === state.visitors.length - 1;
+  const btn = document.getElementById('vibeNext');
+  const next = state.visitors[state.cardPickIdx + 1];
+  btn.textContent = isLast ? "let's go →" : `pass to ${next ? next.firstName : 'next'} →`;
+  btn.disabled = !v.card;
+}
+function pickCard(id) {
+  state.visitors[state.cardPickIdx].card = id;
+  document.querySelectorAll('.vibe-card').forEach(el => {
+    el.classList.toggle('selected', parseInt(el.dataset.id) === id);
+  });
+  document.getElementById('vibeNext').disabled = false;
+}
+function vibeAdvance() {
+  if (state.cardPickIdx < state.visitors.length - 1) {
+    state.cardPickIdx++;
+    // Deselect all cards, scroll to start
+    document.querySelectorAll('.vibe-card').forEach(el => el.classList.remove('selected'));
+    document.getElementById('vibeCarousel').scrollLeft = 0;
+    updateCardPickUI();
+  } else {
+    goTo(4);
+  }
+}
+
+/* ============================================================
+   SCREEN 4 — DURATION
+   ============================================================ */
+function setDur(mins) {
+  state.duration = mins;
+  document.querySelectorAll('.dur-card').forEach(el => {
+    el.classList.toggle('selected', parseInt(el.dataset.mins) === mins);
+  });
+}
+
+/* ============================================================
+   SCREEN 5 — GENERATING
+   ============================================================ */
+function renderGenEmail() {
+  const v = state.visitors[0];
+  const ge = document.getElementById('genEmail');
+  if (ge && v) ge.textContent = v.email || 'your@email.com';
+}
+function runGenerate() {
+  renderGenEmail();
+}
+
+/* ============================================================
+   SCREEN 6 — PHOTO
+   ============================================================ */
+let cameraStream = null;
+
+async function startCamera() {
+  const video = document.getElementById('cameraFeed');
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false
+    });
+    cameraStream = stream;
+    video.srcObject = stream;
+    await video.play();
+    video.style.display = 'block';
+  } catch(e) {
+    console.warn('Camera access denied or unavailable:', e);
+  }
+}
+
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(t => t.stop());
+    cameraStream = null;
+  }
+  const video = document.getElementById('cameraFeed');
+  if (video) { video.srcObject = null; video.style.display = 'none'; }
+}
+
+function renderPhotoScreen() {
+  state.photoTaken = false;
+  state.photoDataURL = null;
+  document.getElementById('photoTakenWrap').classList.remove('show');
+  document.getElementById('shutterBtn').style.display = '';
+  startCamera();
+}
+function takePhoto() {
+  const flash = document.getElementById('photoFlash');
+  flash.classList.remove('go');
+  void flash.offsetWidth;
+  flash.classList.add('go');
+  // Capture frame from live camera
+  const video = document.getElementById('cameraFeed');
+  if (cameraStream && video && video.readyState >= 2) {
+    const canvas = document.getElementById('cameraCanvas');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    ctx.save();
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0);
+    ctx.restore();
+    state.photoDataURL = canvas.toDataURL('image/jpeg', 0.88);
+  }
+  stopCamera();
+  state.photoTaken = true;
+  setTimeout(() => {
+    document.getElementById('shutterBtn').style.display = 'none';
+    const inner = document.getElementById('polaroidInner');
+    if (state.photoDataURL) {
+      inner.innerHTML = `<img src="${state.photoDataURL}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+    } else {
+      inner.innerHTML = state.visitors.map(v => {
+        const init = (v.firstName.charAt(0) + v.lastName.charAt(0)).toUpperCase() || '?';
+        return `<div class="pol-mini" style="background:${v.color}">${init}</div>`;
+      }).join('');
+    }
+    document.getElementById('photoTakenWrap').classList.add('show');
+    setTimeout(() => goTo(7), 700);
+  }, 660);
+}
+function skipPhoto() {
+  stopCamera();
+  state.photoTaken = false;
+  goTo(7);
+}
+
+/* ============================================================
+   SCREEN 7 — FIRST STOP
+   ============================================================ */
+function renderFinalScreen() {
+  // Left side: photo or group name
+  const area = document.getElementById('finalPhotoArea');
+  const gname = state.groupName || (state.visitors[0] ? state.visitors[0].firstName : 'Your group');
+  if (state.photoTaken) {
+    const innerContent = state.photoDataURL
+      ? `<img src="${state.photoDataURL}" style="width:100%;height:100%;object-fit:cover;display:block;">`
+      : state.visitors.map(v => {
+          const init = (v.firstName.charAt(0) + v.lastName.charAt(0)).toUpperCase() || '?';
+          return `<div class="final-pol-av" style="background:${v.color}">${init}</div>`;
+        }).join('');
+    area.innerHTML = `<div class="final-polaroid"><div class="final-pol-inner">${innerContent}</div></div>`;
+  } else {
+    area.innerHTML = `<div class="final-gname">${gname}<em>.</em></div>`;
+  }
+  document.getElementById('finalReady').textContent = `${gname}, you're all set.`;
+  // First stop
+  const v0 = state.visitors[0];
+  const cardId = v0 ? (v0.card || 1) : 1;
+  const card = CARDS.find(c => c.id === cardId) || CARDS[0];
+  const stops = STOPS[card.stopKey] || STOPS[1];
+  const stop = stops[0];
+  document.getElementById('firstStopCard').innerHTML = `
+    <div class="stop-art" style="background:none">
+      <img src="./SAM Game Design System/assets/jacob-lawrence.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+    </div>
+    <div class="stop-info">
+      <span style="display:inline-flex;align-items:center;gap:5px;font:500 10px/1 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);align-self:flex-start;margin-bottom:2px">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="#C8351B"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        First stop
+      </span>
+      <div class="stop-floor">${stop.floor}</div>
+      <div class="stop-gallery">${stop.gallery}</div>
+      <div class="stop-title">The Studio, Jacob Lawrence</div>
+    </div>`;
+}
+
+
+/* ============================================================
+   SCALE TO VIEWPORT
+   ============================================================ */
+function fitApp() {
+  const app = document.getElementById('app');
+  const sx = window.innerWidth / 1366;
+  const sy = window.innerHeight / 1024;
+  const s = Math.min(sx, sy);
+  const leftOffset = (window.innerWidth - 1366 * s) / 2;
+  const topOffset = Math.max(0, (window.innerHeight - 1024 * s) / 2);
+  app.style.transform = `scale(${s})`;
+  app.style.marginLeft = leftOffset + 'px';
+  document.body.style.paddingTop = topOffset + 'px';
+}
+window.addEventListener('resize', fitApp);
+fitApp();
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+function init() {
+  initVisitors();
+  updateNav();
+  renderSizeGrid();
+}
+
+function beginTrail() {
+  const actions = document.getElementById('beginTrailActions');
+  const h2 = document.createElement('h2');
+  h2.textContent = 'Begin your trail';
+  h2.style.cssText = 'font:600 32px/1.1 var(--fb);color:var(--ink);margin:0';
+  actions.innerHTML = '';
+  actions.appendChild(h2);
+}
+
+init();
+</script>
+</body>
+</html>
